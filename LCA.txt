@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+vector<int>adj[2000005];
+int timer, tree[4000005], last[2000005];
+int first[2000005], euler[2000005], h[2000005], vis[2000005];
+void dfs_time(int v, int lev){
+    vis[v] =1;
+    h[v] = lev;
+    first[v] = ++timer;
+    euler[timer] = v;
+    for(auto u: adj[v]){
+        if(vis[u]==0){
+            dfs_time(u, lev+1);
+            last[v]=++timer;
+            euler[timer] = v;
+        }
+    }
+
+}
+void build(int node, int lo, int hi){
+    if(lo==hi){
+        tree[node] = euler[lo];
+        return;
+    }
+    int mid = (lo+hi)/2;
+    int left = node*2, right= left+1;
+    build(left, lo, mid);
+    build(right, mid+1, hi);
+
+    if(h[tree[left]]<h[tree[right]])
+        tree[node] = tree[left];
+    else tree[node] = tree[right];
+
+}
+int query(int node, int lo, int hi, int l, int r){
+    if(lo>r|| hi<l)
+        return -1;
+    if(lo>=l&& hi<=r)
+        return tree[node];
+    int mid = (lo+hi)/2;
+    int left = node*2, right= left+1;
+
+    int p = query(left, lo, mid, l, r);
+    int q = query(right, mid+1, hi, l, r);
+
+    if(p==-1) return q;
+    if(q==-1) return p;
+    if(h[p]<h[q])
+        return p;
+    else return q;
+}
+int LCA(int u, int v){
+    if(first[u]>first[v])
+        swap(u, v);
+    return query(1,1,timer,first[u], first[v]);
+}
+int main()
+{
+    // tree input
+    int n;
+    cin >> n;
+    for(int i=1;i<=n-1;i++){
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    dfs_time(1, 1);
+    build(1,1,timer);
+    
+
+    cout << LCA(3, 4);
+
+}
+

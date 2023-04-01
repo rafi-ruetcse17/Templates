@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+int par[200005];
+vector< int >adj[200005];
+int cap[105][105];
+int n, m;
+//Compiler version g++ 6.3.0
+ 
+int bfs(int s, int t){
+  for(int i=0;i<n;i++) par[i]=-1;
+  par[s]=-2;
+  queue< pair<int,int> >q;
+  q.push({s, 1e9+5});
+ 
+  while(!q.empty()){
+    int v= q.front().first;
+    int flow =q.front().second;
+    q.pop();
+    for(auto u: adj[v]){
+      if(par[u]==-1 && cap[v][u]){
+        par[u] = v;
+        int new_flow = min(flow, cap[v][u]);
+            if (u == t)
+               return new_flow;
+            q.push({u, new_flow});
+        }
+    }
+  }
+ 
+  return 0;
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ll mxflow(int s, int t){
+  ll ret =0;
+  while(true){
+    int cur_flow = bfs(s, t);
+    ret+=cur_flow;
+    if(cur_flow==0) return ret;
+    int cur = t;
+    while(cur!=s){
+      int p = par[cur];
+      cap[cur][p]+=cur_flow;
+      cap[p][cur]-=cur_flow;
+      cur= p;
+    }
+  }
+}
+ 
+int main()
+{
+   cin>> n >> m;
+   for(int i=1;i<=m;i++){
+     int u,v, w;
+     cin >> u >> v >> w;
+     adj[u].push_back(v);
+     adj[v].push_back(u);
+     cap[u][v]+= w;
+   }
+ 
+   ll ans = mxflow(0, n-1);
+   cout << ans << endl;
+ 
+ 
+ 
+}

@@ -1,0 +1,59 @@
+dil pe ptthar rakh pe make up kar lia 
+mere saiya ji se aaj maine break up kar lia
+
+#============================================#
+preliminary concept :  amra subarray sum divisiblity kemne check kori? 
+suppose, a[] = {10,20,30,40,50,60}; eikhane koyta subarray er sum K dara divisible eita kmne kori?
+dhori jodi "30,40,50" ei subarray sum K diye divisible. taile (sum[10+20+30+40+50]-sum[10+20])%k==0 hobe taina? 
+it means sum[10+20+30+40+50]%k==sum[10+20]%k. clear? tar mane ami 50 e ashar por er age map[sum[10+20+30+40+50]%k] er freq ja chilo
+sheita answer er sathe jog hobe taina? note: shuru te map[0]=1 rakhi amra.
+
+
+Main concept: 
+1) kono ekta subarray EP palindrome kina eita check korte amra elemnt gulare sum kore kore rakhte pari.note : map[0]=1 for even. 0 ke even 
+length dhora hoy. so zero length er ekta ep palindrome emnitei initialize kore rakha jay.
+now suppose , a[] = {2,2}. ekhon 0th idx er jonno, sum[a[0]]=2. freq[2]=1. so ei sum er kono value map e nai. so ans=0. 
+but we will increase map[sum[a[0]]]++, jemonta subrray sum er khetre kortam. ebar 1th idx e ashi. sum+[a[1]]=4, freq[2]=2. ei sum
+er kono value o map e nai. but {2,2} is a palindrome. ebar kheyal kori. amra jodi always a[i] plus na kore, jokhn freq odd hobe tokhon sum
+er sathe a[i] add kori, r jokhn freq even hobe tokhn sum theke a[i] minus kori  taile kintu beparta miltese. tar mane jokhn ami first e
+ekta 2 pabo tokhn dhorbo je 2 ekta ache. abar jokhn ekta 2 pabo tokhn dhorbo je r 2 nai. 
+
+so, initially ans=0, map[0]=1;
+taile 0th idx, sum = 2, freq[2] =1, map[sum]=1, ans=0;
+and 1th idx, sum =2-2, freq[2] = 0 (karon even er jonno dhore nibo ekhon r 2 nai), ans+=map[0], map[sum]++; that means ans=1;
+
+ekhon jodi  array ta a[] ={2,2,2} hoito taile 2th idx e eshe ki hoito?
+at 2th idx, sum=0+2, freq;[2]=1, ans+=map[2], map[2]++; that means ans=2;
+
+ebar ashi jhamelay.
+
+problem hoilo bishal array te ei sum er value gula collision korbe. onek shomoy duita number er sum er value onno koekta number er
+sum er value er sathe mile giye jhamela hoite pare. eijonne bishal ekta number diye mod kore protita element er hash value niye 
+kaj kora hocche.
+
+freq[arr[i]] ^= 1;
+if(freq[arr[i]]) 
+	hashv1 = (hashv1 + hsh1[arr[i]]) % mod1;
+else 
+	hashv1 = ((hashv1 - hsh1[arr[i]]) % mod1 + mod1) % mod1;
+
+dekho hash e jokhn freq odd hoise tokhn oi element er hash jog kore rkhse. abr freq even hoile minus kore rakhse.
+
+
+then, 
+ll hashv = hashv1 + (hashv2 << 32);
+amra shudhu hashv1 or hashv2 er jonno map e value rakhte partam. but duita hash value jog kore rakhle collision aro kombe.
+
+abar arekta jhamela hocche EP- palindrome EVEN length er track rakha lagbe. so i)even idx-even idx , ii)odd idx-odd idx ei dui
+upayei even length pawa jay. so shudhu ekta map nile hobena. odd idx er jonno  ekta map, even idx er jonno alad map.
+
+if(i & 1) 
+	ans += odd[hashv], odd[hashv]++;
+else 
+	ans += even[hashv], even[hashv]++;
+
+first e odd idx er jonno odd map, else even idx er jonno even map.
+
+
+
+

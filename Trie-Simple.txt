@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+using namespace std;
+int trie[100005][15];
+int main()
+{
+    int t,n;
+    cin >>t ;
+    while(t--)
+    {
+        memset(trie,0,sizeof(trie));
+        char ch[10005][12];
+        int endp[100005]={},cnt[100005]={};
+
+        int next=1;
+        scanf("%d",&n);
+        for(int i=0;i<n;i++){
+            int now=0;
+            scanf("%s",ch[i]);
+            int sz=strlen(ch[i]);
+        for(int j=0;ch[i][j]!='\0';j++)
+        {
+            int x=ch[i][j]-'0';
+            int y=trie[now][x];
+            if(y==0)
+            {
+                trie[now][x]=next++;
+                now=trie[now][x];
+                cnt[now]++;
+                if(j==sz-1)
+                    endp[now]++;
+
+            }
+            else
+            {
+                now=trie[now][x];
+                cnt[now]++;
+                if(j==sz-1)
+                    endp[now]++;
+            }
+
+        }
+        }
+
+        int f=0;
+        for(int i=0;i<n;i++)
+        {
+            int now=0;
+            int sz=strlen(ch[i]);
+            for(int j=0;ch[i][j]!='\0';j++)
+            {
+                int x=ch[i][j]-'0';
+                int y=trie[now][x];
+                if(cnt[y]==1){
+                    break;
+                }
+                else if(j==sz-1&&cnt[y]>1&&endp[y]>0)
+                {
+                    f=1;
+                }
+                now=y;
+            }
+            if(f==1)
+            {
+                break;
+            }
+        }
+    if(f==0)
+        printf("YES\n");
+    else
+        printf("NO\n");
+    }
+}

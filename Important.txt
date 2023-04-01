@@ -1,0 +1,1 @@
+1. moving right and down in a grid: There are total (2N-2) C (N-1) ways to travel from square (1,1) to (N,N)

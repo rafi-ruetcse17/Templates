@@ -1,0 +1,65 @@
+#define ll long long
+    #define mx 200005
+    ll tree[4*mx], a[200005];
+    ll toggle[4*mx];
+    ll n , q;
+    
+    void propagate(ll node , ll lo, ll hi){
+        ll mid = (lo+hi)/2;
+        ll left = 2*node, right = left+1;
+        
+        toggle[node] =0;
+        toggle[left]^=1;
+        toggle[right]^=1;
+        
+        tree[left] = mid-lo+1-tree[left];
+        tree[right] = hi-mid-tree[right];
+        
+    }
+    void build(ll node, ll lo, ll hi){
+        if(lo==hi){
+            tree[node] = a[lo];
+            return;
+        }
+        ll mid = (lo+hi)>>1;
+        ll left = 2*node, right = left+1;
+        build(left, lo, mid);
+        build(right, mid+1, hi);
+
+        tree[node] = tree[left]+tree[right];
+    }
+
+    void update(ll node, ll lo, ll hi, ll i, ll j){
+        if(lo>j || hi<i)
+            return;
+        if(lo>=i&&hi<=j){
+            toggle[node] ^= 1;
+            tree[node] = hi-lo+1-tree[node];
+            return ;
+        }
+        
+        if(toggle[node]) propagate(node,lo, hi);
+
+        ll mid = (lo+hi)>>1;
+        ll left = 2*node, right = left+1;
+        update(left, lo, mid, i, j);
+        update(right, mid+1, hi, i, j);
+
+        tree[node] = tree[left]+tree[right];
+
+    }
+
+    ll query(ll node, ll lo, ll hi, ll i, ll j){
+        if(lo>j || hi<i)
+            return 0;
+        if(lo>=i&&hi<=j){
+            return tree[node];
+        }
+
+        ll mid = (lo+hi)>>1;
+        ll left = 2*node, right = left+1;
+        ll p = query(left, lo, mid, i, j);
+        ll q = query(right, mid+1, hi, i, j);
+
+        return p+q;
+    }

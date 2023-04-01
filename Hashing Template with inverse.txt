@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define mod1 1000000007
+#define mod2 1000000009
+ll b1 = 251, b2 = 263;
+ll n, h1[2000005], h2[2000005];
+ll hash1[2000005], hash2[2000005];
+ll inv1[2000005], inv2[2000005];
+string s;
+
+ll bigmod(ll a,ll b, ll  m)
+{
+    if(b==0) return 1LL;
+    ll x= bigmod(a,b/2,m);
+    x = (x*x)%m;
+    if(b%2)
+        x = (x*a)%m;
+    return x;
+}
+
+
+int main(){   
+    cin >> s;
+    n = (ll)s.size();
+    hash1[0] =hash2[0] =1;
+    for(ll i=1;i<=n;i++)
+    {
+        hash1[i] = (hash1[i-1]*b1)%mod1;
+        hash2[i] = (hash2[i-1]*b2)%mod2;
+        //inv1[i] =  bigmod(hash1[i],mod1-2, mod1);
+        //inv2[i] =  bigmod(hash2[i],mod2-2, mod2);
+    }
+    inv1[n] = bigmod(hash1[n],mod1-2, mod1);
+    inv2[n] = bigmod(hash2[n],mod2-2, mod2);
+    for(ll i=n-1;i>=0;i--){
+        inv1[i] = (inv1[i+1]*b1)%mod1;
+        inv2[i] = (inv2[i+1]*b2)%mod2;
+    }
+
+    for(ll i=0;i<n;i++){
+        h1[i] =(hash1[i]*s[i])%mod1;
+        h2[i] =(hash2[i]*s[i])%mod2;
+        if(i){
+            h1[i] = (h1[i-1]+h1[i])%mod1;
+            h2[i] = (h2[i-1]+h2[i])%mod2;
+        }
+    }
+}

@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define mx 1000000
+ll cnt[2000005];
+void sieve()
+{
+    for(ll i=2;i<=mx;i++){
+        if(cnt[i]==0){
+            for(ll j= i;j<=mx;j+=i) // count number of distinct prime factors in j
+                cnt[j]++;
+            for(ll j= i*i;j<=mx;j+=i*i)  // eliminating those number who has two or more same prime factors
+                cnt[j] = - 1e15;
+        }
+    }
+}
+int main()
+{
+    sieve();
+    ll l, r;
+    cin >> l >> r;
+    ll ans =0;
+
+    // counting pairs in range L, R who are not co-prime
+    for(ll i=2;i<=r;i++){
+        if(cnt[i]<0) continue;
+        ll x = r/i - (l-1)/i;   //  i er x poriman multiple ache [l,r] range er moddhe
+        if(cnt[i]%2) ans+= (x*(x-1))/2; // inclusion principle onujayi prime factors count odd hoile pair gula jog
+        else ans-= (x*(x-1))/2; // exclusion principle onujayi prime factors count even hoile pair gula biyog
+    }
+
+    cout << "Coprime pairs :" << ((r-l)*(r-l+1))/2- ans << endl;
+}

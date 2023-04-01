@@ -1,0 +1,79 @@
+// In each query given a node S and a Value X. determine how many edges are less than r equal to X and reachable from S
+https://www.codechef.com/problems/TQUERIES
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+pair<int , pair<int,int> > pii[200005], qq[200005];
+int n, m, q;
+int rankk[200005], root[200005], siz[200005], res[200005];
+int Find(int x)
+{
+    if(root[x]==-1) return x;
+    else return root[x] = Find(root[x]);
+}
+
+void Unite(int x, int y)
+{
+    x = Find(x);
+    y = Find(y);
+    if(x==y) return;
+
+    if(rankk[x]<=rankk[y]){
+        rankk[y]++;
+        root[x] =y;
+        siz[y]+=siz[x];
+    }
+    else{
+        rankk[x]++;
+        root[y] =x;
+        siz[x]+=siz[y];
+    }
+}
+int query_nodes(int x)
+{
+    x = Find(x);
+    return siz[x];
+}
+int main()
+{
+    int t;
+    cin >> t;
+    while(t--){
+        cin >> n >> m ;
+        for(int i=1;i<=n;i++){
+            siz[i] =1;
+            root[i] = -1;
+            rankk[i] =0;
+        }
+        for(int i=0;i<m;i++){
+            int u, v, w;
+            scanf("%d%d%d",&u,&v,&w);
+            pii[i].first = w;
+            pii[i].second.first = u;
+            pii[i].second.second = v;
+        }
+        sort(pii, pii+m);
+        cin >> q;
+        for(int i=0;i<q;i++){
+            int s, x;
+            scanf("%d%d",&s, &x);
+            qq[i] = {x,{s,i}};
+        }
+        sort(qq, qq+q);
+        int i=0, j=0;
+        while(j<q){
+            while(i<m && pii[i].first<=qq[j].first){
+                Unite(pii[i].second.first, pii[i].second.second);
+                i++;
+            }
+            res[qq[j].second.second] = query_nodes(qq[j].second.first);
+            j++;
+        }
+
+        for(int i=0;i<q;i++) printf("%d\n", res[i]);
+
+
+
+    }
+}

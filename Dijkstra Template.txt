@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+typedef pair<int,ll>pii;
+vector<pii>adj[1000005];
+ll dist[1000005];
+void bfs(ll src)
+{
+    for(int i=0;i<=1000000;i++)
+        dist[i]=1e18;
+    dist[src]=0;
+    priority_queue<pii, vector<pii>, greater<pii> >q;
+    q.push({src,0});
+    while(!q.empty())
+    {
+        int x =q.top().first;
+        ll w =q.top().second;
+        q.pop();
+        if(w>dist[x]) continue;
+        for(auto u : adj[x])
+        {
+            if(dist[x]+u.second<dist[u.first])
+            {
+                dist[u.first]=dist[x]+u.second;
+                q.push({u.first,dist[u.first]});
+            }
+        }
+    }
+}
+int main()
+{
+    int n,m,s;
+    cin >> n >> m >> s;
+    for(int i=0;i<m;i++)
+    {
+        int x,y;
+        ll w;
+        cin >> x >> y >> w;
+        adj[x].push_back(make_pair(y,w));
+        adj[y].push_back(make_pair(x,w));
+    }
+    bfs(s);
+    
+
+
+}
+

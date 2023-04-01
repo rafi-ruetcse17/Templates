@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+int a[2000005];
+string removeKdigits(string num, int k) {
+    deque<char>dq;
+    string s;
+    for(auto ch : num){
+        if(dq.empty()){
+            dq.push_back(ch);
+            continue;
+        }
+        if(ch=='0'){
+            while(dq.size()>1 && k>0 && dq.back()>ch){
+                dq.pop_back();
+                k--;
+            }
+        }
+        if(ch!='0'){
+            while(dq.size()>0 && k>0 && dq.back()>ch){
+                dq.pop_back();
+                k--;
+            }
+        }
+        if(k>=dq.size() && ch!='0' && dq[0]>ch){
+            k-= dq.size();
+            dq.clear();
+
+        }
+        dq.push_back(ch);
+    }
+    //cout << dq.size() << endl;
+
+    while(k>0){
+        dq.pop_back();
+        k--;
+    }
+
+    for(int i=0;i<dq.size();i++) s+= dq[i];
+    return s;
+}
+int main()
+{
+    int t;
+    cin >>t;
+    while(t--){
+        string s;
+        cin >> s;
+        int k;
+        cin >> k;
+        string ans = removeKdigits(s, k);
+
+        cout << ans << "\n";
+    }
+}

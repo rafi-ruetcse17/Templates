@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+ll a[3005][3005], dp[3005][3005][5];
+int main()
+{
+    int n, m, cnt;
+    cin >> n >> m >> cnt;
+    // cnt defines as number of cell that contain any treasure value to collect
+    for(int i=1;i<=cnt;i++){
+        int x, y;
+        ll v;
+        cin >> x>> y >> v;
+        a[x][y] =v;
+    }
+    int K =3;
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            for(int k=0;k<=K;k++){
+                dp[i][j][0] = max(dp[i][j][0], dp[i-1][j][k]);
+                dp[i][j][k] = max(dp[i][j][k], dp[i][j-1][k]);
+            }
+            for(int k=K;k>0;k--)
+                dp[i][j][k] = max(dp[i][j][k], dp[i][j][k-1]+a[i][j]);
+        }
+    }
+    ll ans =0;
+    for(int k=0;k<=K;k++) ans= max(ans, dp[n][m][k]);
+
+    cout << ans << endl;
+}

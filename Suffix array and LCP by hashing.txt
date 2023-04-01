@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define mod1 1000000009
+ll hash1[10005],inv1[10005],h1[10005];
+const ll p = 257;
+string s;
+int n, ret;
+ll bigmod(ll a,ll b, ll  m)
+{
+    if(b==0) return 1LL;
+    ll x= bigmod(a,b/2,m);
+    x = (x*x)%m;
+    if(b%2)
+        x = (x*a)%m;
+    return x;
+}
+bool cmp(int a, int b)
+{
+    int x = min(n-a, n-b);
+    int lo = 0, hi = x-1;
+    int ans = -1;
+    while(lo<=hi){
+        int mid = (lo+hi)/2;
+        ll hp1= h1[a+mid], hp2 = h1[b+mid];
+        if(a) hp1 = (hp1- h1[a-1])%mod1;
+        hp1 = (hp1+mod1)%mod1;
+        hp1 = (hp1*inv1[a])%mod1;
+
+
+
+        if(b) hp2 = (hp2- h1[b-1])%mod1;
+        hp2 = (hp2+mod1)%mod1;
+        hp2 = (hp2*inv1[b])%mod1;
+
+
+        if(hp1==hp2){
+            ans = mid;
+            lo = mid+1;
+        }
+        else hi = mid -1;
+
+    }
+    ret = ans+1;
+    if(ans==-1){
+        if(s[a]<s[b]) return true;
+        else return false;
+    }
+    if(ans+a+1==n) return true;
+    if(ans+b+1==n) return false;
+
+    return s[a+ans+1]<s[b+ans+1];
+}
+int main()
+{
+    //ios_base::sync_with_stdio(false);
+    //cin.tie(NULL);
+    hash1[0] =1;
+    for(int i=1;i<=10000;i++)
+    {
+        hash1[i] = (hash1[i-1]*p)%mod1;
+        inv1[i] =  bigmod(hash1[i],mod1-2, mod1);
+    }
+    inv1[0] =1;
+    int t, cs=0;
+    cin >> t;
+    while(t--){
+        cin >>s;
+        n = s.size();
+        ll hashp1 = 0;
+        vector<ll>suff(n), lcp(n);
+        for(int i=0;i<n;i++){
+            hashp1 = (hashp1+ s[i]*hash1[i])%mod1;
+            h1[i] = hashp1;
+            suff[i] = i;
+        }
+        sort(suff.begin(),suff.end(),cmp);
+        for(int i=0;i<n-1;i++){
+            cmp(suff[i], suff[i+1]);
+            lcp[i] = ret;
+        }
+    }
+}
+// lcp[i] = longest common prefix between suff[i] and suffix[i+1]
+
